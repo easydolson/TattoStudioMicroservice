@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: tattooStudio_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dashalol
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api_gateway:
+    build: ./api_gateway
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+      - booking_service
+      - catalog_service
+      - user_service
+
+  booking_service:
+    build: ./booking_service
+    expose:
+      - "80"
+
+  catalog_service:
+    build: ./catalog_service
+    expose:
+      - "80"
+
+  user_service:
+    build: ./user_service
+    expose:
+      - "80"
+
+volumes:
+  postgres_data:
